@@ -1,36 +1,40 @@
 import sys
 import os
+import json
 
 from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
 from azure.cognitiveservices.vision.customvision.training.models import ImageFileCreateEntry
 from msrest.authentication import ApiKeyCredentials
 
-water_dict = {'endpoint': 'https://nm-c4ai-vision.cognitiveservices.azure.com/', 'access_key': '3415ff3b23bc4e56b8fd87a76fe81324', 'resource_id': '/subscriptions/dfaa49fb-c9a7-4004-bad7-38d51bf61c2b/resourceGroups/nicomem-cloud4ai/providers/Microsoft.CognitiveServices/accounts/nm-c4ai-vision', 'iteration_name': 'classifyWater', 'project_id': '72bed1b3-e704-44d6-a7f0-ed7138ec5cd4'}
-
-boat_dict = {'endpoint': 'https://nm-c4ai-vision.cognitiveservices.azure.com/', 'access_key': '3415ff3b23bc4e56b8fd87a76fe81324', 'resource_id': '/subscriptions/dfaa49fb-c9a7-4004-bad7-38d51bf61c2b/resourceGroups/nicomem-cloud4ai/providers/Microsoft.CognitiveServices/accounts/nm-c4ai-vision', 'iteration_name': 'detectBoat', 'project_id': '8947e07b-6937-4e03-96b0-d802c62b8928'}
-
 
 def check_args(args):
-    if len(args) != 2 and len(args) != 3:
-        print('Usage: python data_input.py path/to/directory {water / boat} [tag[,tag[,tag[,...]]]]')
+    if len(args) != 3 and len(args) != 4:
+        print('Usage: python data_input.py config.json path/to/directory {water / boat} [tag[,tag[,tag[,...]]]]')
         print(f'Gave {len(args)} args')
         return 1
 
-    if not os.path.isdir(args[0]):
-        print(f'{args[0]} is not a directory')
+    if not os.path.isfile(args[0]):
+        print(f'{args[0]} is not a file')
+
+    if not os.path.isdir(args[1]):
+        print(f'{args[1]} is not a directory')
         return 2
 
-    if args[1] not in ['water', 'boat']:
+    if args[2] not in ['water', 'boat']:
         printf(f'Unrecognized option {args[1]}')
         return 3
 
     return 0
 
-def get_resource_dict(option):
+def get_resource_dict(option, config_path='./config.json'):
+    dicts = ''
+    with open(config_path) as f:
+        dicts = f.read()
+    dicts = json.loads(dicts)
     if option == 'water':
-        return water_dict
+        return dicts['water']
     elif option == 'boat':
-        return boat_dict
+        return dicts['boat']
     else:
         return {}
 
@@ -55,14 +59,15 @@ def main(args):
     if status != 0:
         return status
 
-    directory = args[0]
-    water_or_boat = args[1]
+    config_path = args[0]
+    directory = args[1]
+    water_or_boat = args[2]
     tag_str = ''
-    has_tags = len(args) == 3
+    has_tags = len(args) == 4
     if has_tags:
-        tag_str = args[2]
+        tag_str = args[3]
 
-    resource_dict = get_resource_dict(water_or_boat) 
+    resource_dict = get_resource_dict(water_or_boat, config_path) 
 
     credentials = ApiKeyCredentials(in_headers={"Training-key": resource_dict['access_key']})
     trainer = CustomVisionTrainingClient(resource_dict['endpoint'], credentials)

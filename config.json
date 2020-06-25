@@ -1,0 +1,16 @@
+{
+    "boat": {
+        "access_key": "3415ff3b23bc4e56b8fd87a76fe81324",
+        "endpoint": "https://nm-c4ai-vision.cognitiveservices.azure.com/",
+        "iteration_name": "detectBoat",
+        "project_id": "8947e07b-6937-4e03-96b0-d802c62b8928",
+        "resource_id": "/subscriptions/dfaa49fb-c9a7-4004-bad7-38d51bf61c2b/resourceGroups/nicomem-cloud4ai/providers/Microsoft.CognitiveServices/accounts/nm-c4ai-vision"
+    },
+    "water": {
+        "access_key": "3415ff3b23bc4e56b8fd87a76fe81324",
+        "endpoint": "https://nm-c4ai-vision.cognitiveservices.azure.com/",
+        "iteration_name": "classifyWater",
+        "project_id": "72bed1b3-e704-44d6-a7f0-ed7138ec5cd4",
+        "resource_id": "/subscriptions/dfaa49fb-c9a7-4004-bad7-38d51bf61c2b/resourceGroups/nicomem-cloud4ai/providers/Microsoft.CognitiveServices/accounts/nm-c4ai-vision"
+    }
+}
